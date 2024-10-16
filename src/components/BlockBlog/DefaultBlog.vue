@@ -25,7 +25,7 @@
 					:text="item.post_content"
 				/>
 			</div>
-			<BaseButton class="blog__button" color="accent">ПОЧИТАТЬ ЕЩЕ</BaseButton>
+			<!-- <BaseButton class="blog__button" color="accent">ПОЧИТАТЬ ЕЩЕ</BaseButton> -->
 		</GlobalContainer>
 	</section>
 </template>

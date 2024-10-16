@@ -1,5 +1,59 @@
 <script setup>
 	import BaseButton from "../global/BaseButton.vue";
+	import {periods} from "@/utils/constants"
+	import productUtil from "@/utils/product"
+
+	const props = defineProps({
+		valueProcessor: {
+			type: String,
+			default: "",
+		},
+		valueTypeStorage: {
+			type: String,
+			default: "",
+		},
+		valueDeadline: {
+			type: String,
+			default: "",
+		},
+		valueOS: {
+			type: String,
+			default: "",
+		},
+		valueMemory: {
+			type: String,
+			default: "",
+		},
+		valueRam: {
+			type: String,
+			default: "",
+		},
+		valueIp: {
+			type: String,
+			default: "",
+		},
+		valueTypeProtection: {
+			type: String,
+			default: "",
+		},
+		clicker: {
+			type: String,
+			default: "",
+		},
+	});
+
+	const emit = defineEmits(["update:clicker"]);
+
+	const clickOrder = (el) => {
+		console.log('generateConfigLink', props)
+		productUtil.generateConfigLink(
+			props.valueDeadline, 
+			props.valueRam,
+			props.valueProcessor,
+			props.valueMemory,
+			props.valueIp
+		)
+	}
 </script>
 
 <template>
@@ -13,22 +67,22 @@
 				<div class="tariff-item__info-row">
 					<p class="tariff-item__info-title">CPU</p>
 					<hr class="tariff-item__info-line" />
-					<p class="tariff-item__info-value">1 ядро</p>
+					<p class="tariff-item__info-value">{{ valueProcessor }} ядро</p>
 				</div>
 				<div class="tariff-item__info-row">
 					<p class="tariff-item__info-title">RAM</p>
 					<hr class="tariff-item__info-line" />
-					<p class="tariff-item__info-value">1 ГБ</p>
+					<p class="tariff-item__info-value">{{ valueRam }} ГБ</p>
 				</div>
 				<div class="tariff-item__info-row">
-					<p class="tariff-item__info-title">SSD</p>
+					<p class="tariff-item__info-title">{{ valueTypeStorage }}</p>
 					<hr class="tariff-item__info-line" />
-					<p class="tariff-item__info-value">620 ГБ</p>
+					<p class="tariff-item__info-value">{{ valueMemory }} ГБ</p>
 				</div>
 			</div>
 			<div class="tariff-item__group">
 				<p class="tariff-item__group-title">Нагрузка:</p>
-				<p class="tariff-item__group-text">Операционная система:</p>
+				<p class="tariff-item__group-text">{{ valueOS }}</p>
 			</div>
 			<div class="tariff-item__group">
 				<p class="tariff-item__group-title">Предустановленное ПО:</p>
@@ -40,18 +94,18 @@
 			</div>
 			<div class="tariff-item__group">
 				<p class="tariff-item__group-title">Лимит IP-адресов:</p>
-				<p class="tariff-item__group-text">256 адресов</p>
+				<p class="tariff-item__group-text">{{ valueIp }} адресов</p>
 			</div>
 			<div class="tariff-item__group">
 				<p class="tariff-item__group-title">Информационная безопасность:</p>
-				<p class="tariff-item__group-text">Защита от DDoS</p>
+				<p class="tariff-item__group-text">{{ valueTypeProtection }}</p>
 			</div>
 			<div class="tariff-item__group">
 				<p class="tariff-item__group-title">Срок заказа:</p>
-				<p class="tariff-item__group-text">1 месяц</p>
+				<p class="tariff-item__group-text">{{ periods[valueDeadline]?.name }}</p>
 			</div>
 		</div>
-		<BaseButton class="tariff-item__button" color="orange">ЗАКАЗАТЬ</BaseButton>
+		<BaseButton class="tariff-item__button" color="orange" @click="clickOrder">ЗАКАЗАТЬ</BaseButton>
 	</div>
 </template>
 

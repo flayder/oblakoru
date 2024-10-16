@@ -3,7 +3,7 @@
 	import BaseSlider from "../global/BaseSlider.vue";
 	import ConfiguratorGroup from "./ConfiguratorGroup.vue";
 
-	defineProps({
+	const props = defineProps({
 		title: {
 			type: String,
 			default: "title",
@@ -20,9 +20,15 @@
 			type: Number,
 			default: 104,
 		},
+		modelValue: {
+			type: String,
+			default: "0",
+		},
 	});
 
-	const value = ref(2);
+	const emit = defineEmits(["update:modelValue"]);
+
+	const value = ref(props.modelValue);
 </script>
 
 <template>
@@ -36,7 +42,7 @@
 					@input="
 						if (value < min) value = min;
 						if (value > max) value = max;
-						$emit('update:modelValue', value);
+						emit('update:modelValue', value);
 					"
 				/>
 				{{ postfix }}
@@ -48,6 +54,9 @@
 				:max="max"
 				:min="min"
 				:postfix="postfix"
+				@update:model-value="(value) => {
+					emit('update:modelValue', value)
+				}"
 				class="configurator-slider__slider"
 			/>
 		</template>

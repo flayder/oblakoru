@@ -1,16 +1,20 @@
 <script setup>
-	import { ref } from "vue";
+	import { ref, watch } from "vue";
 	import ConfiguratorSlider from "./ConfiguratorSlider.vue";
 	import TariffItemConfigurator from "./TariffItemConfigurator.vue";
 	import TariffRadio from "./TariffRadio.vue";
 	import ConfiguratorGroup from "./ConfiguratorGroup.vue";
 	import ConfiguratorDropdown from "./ConfiguratorDropdown.vue";
+	import {periods} from "@/utils/constants"
 
+	const valueProcessor = ref("2");
 	const valueTypeStorage = ref("SSD");
 	const valueTypeProtection = ref("Базовая");
-	const valueDeadline = ref("1 месяц");
+	const valueDeadline = ref("1");
 	const valueOS = ref("ubuntu_14_04");
-
+	const valueMemory = ref("20");
+	const valueRam = ref("2");
+	const valueIp = ref("0");
 	const ubuntuVersions = [
 		{ title: "14.04", value: "ubuntu_14_04" },
 		{ title: "16.04", value: "ubuntu_16_04" },
@@ -55,6 +59,8 @@
 		{ title: "8.4", value: "atstra_linux_8_4" },
 		{ title: "9.0", value: "atstra_linux_9_0" },
 	];
+
+	
 </script>
 
 <template>
@@ -63,12 +69,24 @@
 			<div class="configurator__group">
 				<p class="configurator__title">Процессор и память</p>
 				<div class="configurator__group-column">
-					<ConfiguratorSlider title="Количество ядер процессора:" />
+					<ConfiguratorSlider 
+						title="Количество ядер процессора:"
+						v-model="valueProcessor"
+						@update:modelValue="(value) => {
+							valueProcessor = value
+						}"
+						:min="2"
+						:max="16"
+					/>
 					<ConfiguratorSlider
 						title="Объём оперативной памяти (DDR4):"
+						v-model="valueRam"
+						@update:modelValue="(value) => {
+							valueRam = value
+						}"
 						postfix="ГБ"
 						:min="2"
-						:max="512"
+						:max="64"
 					/>
 				</div>
 			</div>
@@ -81,15 +99,21 @@
 							<TariffRadio
 								:options="['SSD', 'NVMe']"
 								:model-value="valueTypeStorage"
-								@update:model-value="(value) => (valueTypeStorage = value)"
+								@update:model-value="(value) => {
+									valueTypeStorage = value
+								}"
 							/>
 						</template>
 					</ConfiguratorGroup>
 					<ConfiguratorSlider
+						v-model="valueMemory"
+						@update:model-value="(value) => {
+							valueMemory = value
+						}"
 						title="Объём накопителя:"
 						postfix="ГБ"
 						:min="20"
-						:max="4000"
+						:max="2000"
 					/>
 				</div>
 			</div>
@@ -98,6 +122,10 @@
 				<p class="configurator__title">IP-адреса</p>
 				<ConfiguratorSlider
 					title="Количество публичных IPv4:"
+					v-model="valueIp"
+					@update:model-value="(value) => {
+						valueIp = value
+					}"
 					postfix="шт"
 					:min="0"
 					:max="10"
@@ -166,7 +194,9 @@
 						<TariffRadio
 							:options="['Базовая', 'Защита от DDOS']"
 							:model-value="valueTypeProtection"
-							@update:model-value="(value) => (valueTypeProtection = value)"
+							@update:model-value="(value) => {
+								valueTypeProtection = value
+							}"
 						/>
 					</template>
 				</ConfiguratorGroup>
@@ -177,15 +207,27 @@
 				<ConfiguratorGroup title="Скидка" is-discount price="5%">
 					<template #content>
 						<TariffRadio
-							:options="['1 месяц', '3 месяца', '6 месяцев', '12 месяцев']"
+							:options="periods"
 							:model-value="valueDeadline"
-							@update:model-value="(value) => (valueDeadline = value)"
+							@update:model-value="(value) => {
+								valueDeadline = value
+							}"
 						/>
 					</template>
 				</ConfiguratorGroup>
 			</div>
 		</div>
-		<TariffItemConfigurator class="configurator__result" />
+		<TariffItemConfigurator 
+			:value-deadline="valueDeadline"
+			:value-ip="valueIp"
+			:value-memory="valueMemory"
+			:value-o-s="valueOS"
+			:value-processor="valueProcessor"
+			:value-ram="valueRam"
+			:value-type-protection="valueTypeProtection"
+			:value-type-storage="valueTypeStorage"
+			class="configurator__result" 
+		/>
 	</div>
 </template>
 

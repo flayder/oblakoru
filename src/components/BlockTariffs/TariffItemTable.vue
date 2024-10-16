@@ -1,12 +1,22 @@
 <script setup>
 	import BaseButton from "../global/BaseButton.vue";
+	import {ref} from "vue" 
+	import productUtil from "@/utils/product"
 
-	defineProps({
+	const props = defineProps({
 		tariff: {
 			type: Object,
 			default: () => {},
 		},
 	});
+
+	const pricelist = ref(props?.tariff?.fields?.pricelist?.value);
+	const duration = ref(props?.tariff?.fields?.month?.value ?? '1');
+	const defaultValue = ref(props?.tariff?.fields?.memory?.value?.memory_default ?? '1');
+
+	const orderClick = () => {
+		productUtil.generateBaseLink(pricelist.value, defaultValue.value, duration.value)
+	}
 </script>
 
 <template>
@@ -43,7 +53,7 @@
 				{{ tariff?.fields?.price?.value }} ₽
 			</p>
 		</div>
-		<BaseButton class="tariff-item-table__button" color="orange">
+		<BaseButton class="tariff-item-table__button" color="orange" @click="orderClick">
 			ЗАКАЗАТЬ
 		</BaseButton>
 	</div>

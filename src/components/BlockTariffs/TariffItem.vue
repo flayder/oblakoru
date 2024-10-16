@@ -4,6 +4,8 @@
 	import BaseSlider from "../global/BaseSlider.vue";
 	import TariffRadio from "./TariffRadio.vue";
 	import BaseDropdown from "../global/BaseDropdown.vue";
+	import productUtil from "@/utils/product"
+	import {periods} from "@/utils/constants"
 
 	const props = defineProps({
 		tariff: {
@@ -15,8 +17,13 @@
 
 	const valueSSD = ref(props?.tariff?.fields?.ssd?.value);
 	const diskType = ref(props?.tariff?.fields?.disc_type?.value[0]);
-	const duration = ref(props?.tariff?.duration);
-	const defaultValue = ref(props?.tariff.fields.memory.value.memory_default);
+	const pricelist = ref(props?.tariff?.fields?.pricelist?.value);
+	const duration = ref(props?.tariff?.fields?.month?.value ?? '1');
+	const defaultValue = ref(props?.tariff?.fields?.memory?.value?.memory_default);
+
+	const orderClick = () => {
+		productUtil.generateBaseLink(pricelist.value, defaultValue.value, duration.value)
+	}
 </script>
 
 <template>
@@ -58,13 +65,13 @@
 			<div class="tariff-item__group">
 				<p class="tariff-item__group-title">Срок заказа:</p>
 				<BaseDropdown
-					:options="['1 месяц', '3 месяца', '6 месяцев']"
+					:options="periods"
 					:value="duration"
 					@update:value="(value) => (duration = value)"
 				/>
 			</div>
 		</div>
-		<BaseButton class="tariff-item__button" color="orange">ЗАКАЗАТЬ</BaseButton>
+		<BaseButton class="tariff-item__button" color="orange" @click="orderClick">ЗАКАЗАТЬ</BaseButton>
 	</div>
 </template>
 

@@ -25,12 +25,42 @@
 	watch(
 		() => props.modelValue,
 		(newValue) => {
-			localValue.value = newValue;
+			localValue.value = getValue(newValue);
 		}
 	);
 
+	const getValue = (item) => {
+		if(typeof item == 'object' && item?.name && item?.value) {
+			return item.value
+		}
+
+		return item
+	}
+
+	const getName = (item) => {
+		if(typeof item == 'object' && item?.name && item?.value) {
+			return item.name
+		}
+
+		return item
+	}
+
+	const getNameByValue = (value) => {
+		var name = ''
+		props.options.map((item) => {
+			if(typeof item == 'object' && item?.name && item?.value) {
+				if(item.value == value)
+					name = item.name
+			} else if (item == value) {
+				name = item
+			}
+		})
+
+		return name
+	}
+
 	const updateValue = (value) => {
-		emit("update:modelValue", value);
+		emit("update:modelValue", getValue(value));
 	};
 	const { windowWidth } = useWindowWidth();
 </script>
@@ -48,18 +78,18 @@
 			v-for="(radio, index) in options"
 			:key="index"
 			class="tariff-radio__label"
-			:class="{ 'tariff-radio__label--active': localValue === radio }"
+			:class="{ 'tariff-radio__label--active': localValue === getValue(radio) }"
 		>
 			<input
 				:name="`tariff-radio__${id}`"
 				type="radio"
 				:value="radio"
-				:checked="radio === modelValue"
+				:checked="getValue(radio) === modelValue"
 				class="tariff-radio__input"
 				@input="updateValue(radio)"
 			/>
 
-			<p class="tariff-radio__text">{{ radio }}</p>
+			<p class="tariff-radio__text">{{ getName(radio) }}</p>
 		</label>
 	</div>
 </template>

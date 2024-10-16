@@ -2,7 +2,7 @@
 	import IconChevron from "@/assets/icons/IconChevron.vue";
 	import { ref } from "vue";
 
-	defineProps({
+	const props = defineProps({
 		options: {
 			type: Array,
 			default: () => [],
@@ -13,6 +13,36 @@
 		},
 	});
 
+	const getValue = (item) => {
+		if(typeof item == 'object' && item?.name && item?.value) {
+			return item.value
+		}
+
+		return item
+	}
+
+	const getName = (item) => {
+		if(typeof item == 'object' && item?.name && item?.value) {
+			return item.name
+		}
+
+		return item
+	}
+
+	const getNameByValue = (value) => {
+		var name = ''
+		props.options.map((item) => {
+			if(typeof item == 'object' && item?.name && item?.value) {
+				if(item.value == value)
+					name = item.name
+			} else if (item == value) {
+				name = item
+			}
+		})
+
+		return name
+	}
+
 	defineEmits(["update:value"]);
 
 	const isOpen = ref(false);
@@ -21,7 +51,7 @@
 <template>
 	<div class="dropdown" :class="`${isOpen ? 'dropdown--active' : ''}`">
 		<p class="dropdown__title" @click.self="isOpen = !isOpen">
-			{{ value }}
+			{{ getNameByValue(value) }}
 			<IconChevron v-if="options.length > 0" />
 		</p>
 		<div
@@ -31,19 +61,19 @@
 		>
 			<div class="dropdown__inner-list">
 				<button
-					v-for="item in options"
-					:key="item"
+					v-for="(item, index) in options"
+					:key="index"
 					class="dropdown__option"
-					:class="value === item ? 'dropdown__option--active' : ''"
+					:class="value === getValue(item) ? 'dropdown__option--active' : ''"
 					type="button"
 					@click="
 						() => {
-							$emit('update:value', item);
+							$emit('update:value', getValue(item));
 							isOpen = false;
 						}
 					"
 				>
-					{{ item }}
+					{{ getName(item) }}
 				</button>
 			</div>
 		</div>
